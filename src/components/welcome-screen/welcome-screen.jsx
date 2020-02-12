@@ -5,7 +5,7 @@ const WelcomeScreen = (props) => {
   const {
     time,
     errorCount,
-    onClick,
+    onStartButtonClick,
   } = props;
 
   return <section className="welcome">
@@ -13,7 +13,7 @@ const WelcomeScreen = (props) => {
       <img src="img/melody-logo.png" alt="Угадай мелодию" width="186" height="83"/>
     </div>
 
-    <button className="welcome__button" onClick={onClick}>
+    <button className="welcome__button" onClick={onStartButtonClick}>
       <span className="visually-hidden">Начать игру</span>
     </button>
 
@@ -23,6 +23,7 @@ const WelcomeScreen = (props) => {
 
     <ul className="welcome__rules-list">
       <li>За {time} минут нужно ответить на все вопросы.</li>
+
       <li>Можно допустить {errorCount} ошибки.</li>
     </ul>
 
@@ -33,7 +34,7 @@ const WelcomeScreen = (props) => {
 WelcomeScreen.propTypes = {
   time: PropTypes.number.isRequired,
   errorCount: PropTypes.number.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onStartButtonClick: PropTypes.func.isRequired,
 };
 
 export default WelcomeScreen;
