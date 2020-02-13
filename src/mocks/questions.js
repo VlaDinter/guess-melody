@@ -6,44 +6,44 @@
   questions: [
     {
       type: `genre`,
-      genre: `electronic`,
+      genre: `reggae`,
       answers: [
         {
-          src: `https://es31-server.appspot.com/guess-melody/static/music/Blue_Whale.mp3`,
-          genre: `alternative`,
+          src: `https://upload.wikimedia.org/wikipedia/commons/c/ce/A-window-into-the-brain-mechanisms-associated-with-noise-sensitivity-srep39236-s2.oga`,
+          genre: `country`,
         },
         {
-          src: `https://es31-server.appspot.com/guess-melody/static/music/Memories_Station_of_Tomorrow.mp3`,
-          genre: `alternative`,
-        },
-        {
-          src: `https://es31-server.appspot.com/guess-melody/static/music/Azure.mp3`,
+          src: `https://upload.wikimedia.org/wikipedia/commons/c/ce/A-window-into-the-brain-mechanisms-associated-with-noise-sensitivity-srep39236-s2.oga`,
           genre: `electronic`,
         },
         {
-          src: `https://es31-server.appspot.com/guess-melody/static/music/Parkside.mp3`,
-          genre: `country`,
+          src: `https://upload.wikimedia.org/wikipedia/commons/c/ce/A-window-into-the-brain-mechanisms-associated-with-noise-sensitivity-srep39236-s2.oga`,
+          genre: `reggae`,
+        },
+        {
+          src: `https://upload.wikimedia.org/wikipedia/commons/c/ce/A-window-into-the-brain-mechanisms-associated-with-noise-sensitivity-srep39236-s2.oga`,
+          genre: `alternative`,
         },
       ],
     },
     {
       type: `artist`,
       song: {
-        artist: `Spazz Cardigan`,
-        src: `https://es31-server.appspot.com/guess-melody/static/music/Nothin_Yet.mp3`,
+        artist: `Jim Beam`,
+        src: `https://upload.wikimedia.org/wikipedia/commons/c/ce/A-window-into-the-brain-mechanisms-associated-with-noise-sensitivity-srep39236-s2.oga`,
       },
       answers: [
         {
-          picture: `https://es31-server.appspot.com/guess-melody/static/artist/Jingle_Punks.jpg`,
-          artist: `Jingle Punks`,
+          picture: `https://placehold.it/134x134`,
+          artist: `John Snow`,
         },
         {
-          picture: `https://es31-server.appspot.com/guess-melody/static/artist/Spazz_Cardigan.jpg`,
-          artist: `Spazz Cardigan`,
+          picture: `https://placehold.it/134x134`,
+          artist: `Jack Daniels`,
         },
         {
-          picture: `https://es31-server.appspot.com/guess-melody/static/artist/Dan_Lebowitz.jpg`,
-          artist: `Dan Lebowitz`,
+          picture: `https://placehold.it/134x134`,
+          artist: `Jim Beam`,
         },
       ],
     },

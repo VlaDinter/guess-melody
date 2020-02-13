@@ -1,68 +1,84 @@
-﻿import React from 'react';
+﻿import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 
-const GenreQuestionScreen = (props) => {
-  const {
-    genre,
-    answers,
-    onAnswer,
-  } = props;
+import AudioPlayer from '../audio-player/audio-player.jsx';
 
-  return <section className="game game--genre">
-    <header className="game__header">
-      <a className="game__back" href="#">
-        <span className="visually-hidden">Сыграть ещё раз</span>
+class GenreQuestionScreen extends PureComponent {
+  constructor(props) {
+    super(props);
 
-        <img className="game__logo" src="img/melody-logo-ginger.png" alt="Угадай мелодию"/>
-      </a>
+    this.state = {
+      activePlayer: -1,
+    };
+  }
 
-      <svg xmlns="http://www.w3.org/2000/svg" className="timer" viewBox="0 0 780 780">
-        <circle className="timer__line" cx="390" cy="390" r="370" style={{filter: `url(#blur)`, transform: `rotate(-90deg) scaleY(-1)`, transformOrigin: `center`}}/>
-      </svg>
+  render() {
+    const {
+      genre,
+      answers,
+      onAnswer,
+    } = this.props;
 
-      <div className="timer__value" xmlns="http://www.w3.org/1999/xhtml">
-        <span className="timer__mins">05</span>
+    const {activePlayer} = this.state;
 
-        <span className="timer__dots">:</span>
+    return <section className="game game--genre">
+      <header className="game__header">
+        <a className="game__back" href="#">
+          <span className="visually-hidden">Сыграть ещё раз</span>
 
-        <span className="timer__secs">00</span>
-      </div>
+          <img className="game__logo" src="img/melody-logo-ginger.png" alt="Угадай мелодию"/>
+        </a>
 
-      <div className="game__mistakes">
-        <div className="wrong"></div>
+        <svg xmlns="http://www.w3.org/2000/svg" className="timer" viewBox="0 0 780 780">
+          <circle className="timer__line" cx="390" cy="390" r="370" style={{filter: `url(#blur)`, transform: `rotate(-90deg) scaleY(-1)`, transformOrigin: `center`}}/>
+        </svg>
 
-        <div className="wrong"></div>
+        <div className="timer__value" xmlns="http://www.w3.org/1999/xhtml">
+          <span className="timer__mins">05</span>
 
-        <div className="wrong"></div>
-      </div>
-    </header>
+          <span className="timer__dots">:</span>
 
-    <section className="game__screen">
-      <h2 className="game__title">Выберите {genre} треки</h2>
+          <span className="timer__secs">00</span>
+        </div>
 
-      <form className="game__tracks" onSubmit={(evt) => {
-        evt.preventDefault();
-        onAnswer();
-      }}>
-        {answers.map((it, i) => <div className="track" key={`answer-${i}`}>
-          <button className="track__button track__button--play" type="button"/>
+        <div className="game__mistakes">
+          <div className="wrong"></div>
 
-          <div className="track__status">
-            <audio/>
-          </div>
+          <div className="wrong"></div>
 
-          <div className="game__answer">
-            <input className="game__input visually-hidden" type="checkbox" name="answer" value={`answer-${i}`} id={`answer-${i}`}/>
+          <div className="wrong"></div>
+        </div>
+      </header>
 
-            <label className="game__check" htmlFor={`answer-${i}`}>Отметить</label>
-          </div>
-        </div>)}
+      <section className="game__screen">
+        <h2 className="game__title">Выберите {genre} треки</h2>
 
-        <button className="game__submit button" type="submit">Ответить</button>
-      </form>
-    </section>
-  </section>;
-};
+        <form className="game__tracks" onSubmit={(evt) => {
+          evt.preventDefault();
+          onAnswer();
+        }}>
+          {answers.map((it, i) => <div className="track" key={`answer-${i}`}>
+            {<AudioPlayer
+              src={it.src}
+              isPlaying={i === activePlayer}
+              onPlayButtonClick={() => this.setState({
+                activePlayer: activePlayer === i ? -1 : i,
+              })}
+            />}
+
+            <div className="game__answer">
+              <input className="game__input visually-hidden" type="checkbox" name="answer" value={`answer-${i}`} id={`answer-${i}`}/>
+
+              <label className="game__check" htmlFor={`answer-${i}`}>Отметить</label>
+            </div>
+          </div>)}
+
+          <button className="game__submit button" type="submit">Ответить</button>
+        </form>
+      </section>
+    </section>;
+  }
+}
 
 GenreQuestionScreen.propTypes = {
   genre: PropTypes.string.isRequired,

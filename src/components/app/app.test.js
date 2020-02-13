@@ -10,11 +10,7 @@ const mock = [
     answers: [
       {
         src: `test.mp3`,
-        genre: `country`,
-      },
-      {
-        src: `test.mp3`,
-        genre: `electronic`,
+        genre: `alternative`,
       },
       {
         src: `test.mp3`,
@@ -22,12 +18,16 @@ const mock = [
       },
       {
         src: `test.mp3`,
-        genre: `alternative`,
+        genre: `electronic`,
+      },
+      {
+        src: `test.mp3`,
+        genre: `country`,
       },
     ],
   },
   {
-    type: `artist`,
+    type: `John Snow`,
     song: {
       artist: `Unicorn Heads`,
       src: `path.mp3`,
@@ -35,15 +35,15 @@ const mock = [
     answers: [
       {
         picture: `path.jpg`,
-        artist: `Spazz Cardigan`,
+        artist: `Jack Daniels`,
       },
       {
         picture: `path.jpg`,
-        artist: `Density & Time`,
+        artist: `Jim Beam`,
       },
       {
         picture: `path.jpg`,
-        artist: `Unicorn Heads`,
+        artist: `John Snow`,
       },
     ],
   },

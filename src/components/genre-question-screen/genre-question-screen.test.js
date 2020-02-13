@@ -8,11 +8,7 @@ const mock = {
   answers: [
     {
       src: `test.mp3`,
-      genre: `country`,
-    },
-    {
-      src: `test.mp3`,
-      genre: `electronic`,
+      genre: `alternative`,
     },
     {
       src: `test.mp3`,
@@ -20,7 +16,11 @@ const mock = {
     },
     {
       src: `test.mp3`,
-      genre: `alternative`,
+      genre: `electronic`,
+    },
+    {
+      src: `test.mp3`,
+      genre: `country`,
     },
   ],
 };
