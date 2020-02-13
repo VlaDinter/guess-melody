@@ -4,23 +4,22 @@ import renderer from 'react-test-renderer';
 import ArtisrQuestionScreen from './artist-question-screen.jsx';
 
 const mock = {
-  type: `artist`,
   song: {
-    artist: `Unicorn Heads`,
+    artist: `John Snow`,
     src: `path.mp3`,
   },
   answers: [
     {
       picture: `path.jpg`,
-      artist: `Spazz Cardigan`,
+      artist: `Jack Daniels`,
     },
     {
       picture: `path.jpg`,
-      artist: `Density & Time`,
+      artist: `Jim Beam`,
     },
     {
       picture: `path.jpg`,
-      artist: `Unicorn Heads`,
+      artist: `John Snow`,
     },
   ],
 };

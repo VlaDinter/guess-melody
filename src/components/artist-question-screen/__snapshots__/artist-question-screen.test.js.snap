@@ -91,6 +91,8 @@ exports[`ArtistQuestionScreen is rendered correctly 1`] = `
       >
         <button
           className="track__button track__button--play"
+          disabled={true}
+          onClick={[Function]}
           type="button"
         />
         <div
@@ -122,7 +124,7 @@ exports[`ArtistQuestionScreen is rendered correctly 1`] = `
             className="artist__picture"
             src="path.jpg"
           />
-          Spazz Cardigan
+          Jack Daniels
         </label>
       </div>
       <div
@@ -143,7 +145,7 @@ exports[`ArtistQuestionScreen is rendered correctly 1`] = `
             className="artist__picture"
             src="path.jpg"
           />
-          Density & Time
+          Jim Beam
         </label>
       </div>
       <div
@@ -164,7 +166,7 @@ exports[`ArtistQuestionScreen is rendered correctly 1`] = `
             className="artist__picture"
             src="path.jpg"
           />
-          Unicorn Heads
+          John Snow
         </label>
       </div>
     </form>
