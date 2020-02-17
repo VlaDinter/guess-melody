@@ -4,15 +4,12 @@ import renderer from 'react-test-renderer';
 import GenreQuestionScreen from './genre-question-screen.jsx';
 
 const mock = {
-  genre: `country`,
+  type: `genre`,
+  genre: `reggae`,
   answers: [
     {
       src: `test.mp3`,
       genre: `alternative`,
-    },
-    {
-      src: `test.mp3`,
-      genre: `reggae`,
     },
     {
       src: `test.mp3`,
@@ -22,11 +19,16 @@ const mock = {
       src: `test.mp3`,
       genre: `country`,
     },
+    {
+      src: `test.mp3`,
+      genre: `reggae`,
+    },
   ],
 };
 
 it(`GenreQuestionScreen is rendered correctly`, () => {
   const tree = renderer.create(<GenreQuestionScreen
+    step={0}
     genre={mock.genre}
     answers={mock.answers}
     onAnswer={jest.fn()}

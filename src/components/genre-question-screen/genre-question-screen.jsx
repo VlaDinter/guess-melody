@@ -7,84 +7,65 @@ class GenreQuestionScreen extends PureComponent {
   constructor(props) {
     super(props);
 
+    const {answers} = this.props;
+
     this.state = {
       activePlayer: -1,
+      userAnswer: new Array(answers.length).fill(false),
     };
   }
 
   render() {
     const {
+      step,
       genre,
       answers,
       onAnswer,
     } = this.props;
 
-    const {activePlayer} = this.state;
+    return <section className="game__screen">
+      <h2 className="game__title">Выберите {genre} треки</h2>
 
-    return <section className="game game--genre">
-      <header className="game__header">
-        <a className="game__back" href="#">
-          <span className="visually-hidden">Сыграть ещё раз</span>
+      <form className="game__tracks" onSubmit={(evt) => {
+        evt.preventDefault();
+        onAnswer(this.state.userAnswer);
+        this.setState({
+          activePlayer: -1,
+          userAnswer: this.state.userAnswer.fill(false),
+        });
+      }}>
+        {answers.map((it, i) => <div className="track" key={`${step}-answer-${i}`}>
+          <AudioPlayer
+            src={it.src}
+            isPlaying={i === this.state.activePlayer}
+            onPlayButtonClick={() => this.setState({
+              activePlayer: this.state.activePlayer === i ? -1 : i,
+            })}
+          />
 
-          <img className="game__logo" src="img/melody-logo-ginger.png" alt="Угадай мелодию"/>
-        </a>
+          <div className="game__answer">
+            <input className="game__input visually-hidden" type="checkbox" name="answer" value={`answer-${i}`} id={`answer-${i}`} checked={this.state.userAnswer[i]} onChange={() => {
+              const userAnswer = [...this.state.userAnswer];
+              userAnswer[i] = !userAnswer[i];
+              this.setState({userAnswer});
+            }}/>
 
-        <svg xmlns="http://www.w3.org/2000/svg" className="timer" viewBox="0 0 780 780">
-          <circle className="timer__line" cx="390" cy="390" r="370" style={{filter: `url(#blur)`, transform: `rotate(-90deg) scaleY(-1)`, transformOrigin: `center`}}/>
-        </svg>
+            <label className="game__check" htmlFor={`answer-${i}`}>Отметить</label>
+          </div>
+        </div>)}
 
-        <div className="timer__value" xmlns="http://www.w3.org/1999/xhtml">
-          <span className="timer__mins">05</span>
-
-          <span className="timer__dots">:</span>
-
-          <span className="timer__secs">00</span>
-        </div>
-
-        <div className="game__mistakes">
-          <div className="wrong"></div>
-
-          <div className="wrong"></div>
-
-          <div className="wrong"></div>
-        </div>
-      </header>
-
-      <section className="game__screen">
-        <h2 className="game__title">Выберите {genre} треки</h2>
-
-        <form className="game__tracks" onSubmit={(evt) => {
-          evt.preventDefault();
-          onAnswer();
-        }}>
-          {answers.map((it, i) => <div className="track" key={`answer-${i}`}>
-            {<AudioPlayer
-              src={it.src}
-              isPlaying={i === activePlayer}
-              onPlayButtonClick={() => this.setState({
-                activePlayer: activePlayer === i ? -1 : i,
-              })}
-            />}
-
-            <div className="game__answer">
-              <input className="game__input visually-hidden" type="checkbox" name="answer" value={`answer-${i}`} id={`answer-${i}`}/>
-
-              <label className="game__check" htmlFor={`answer-${i}`}>Отметить</label>
-            </div>
-          </div>)}
-
-          <button className="game__submit button" type="submit">Ответить</button>
-        </form>
-      </section>
+        <button className="game__submit button" type="submit">Ответить</button>
+      </form>
     </section>;
   }
 }
 
 GenreQuestionScreen.propTypes = {
-  genre: PropTypes.string.isRequired,
+  step: PropTypes.number,
+  genre: PropTypes.oneOf([`alternative`, `electronic`, `country`, `reggae`]).isRequired,
   answers: PropTypes.arrayOf(PropTypes.shape({
     src: PropTypes.string.isRequired,
-    genre: PropTypes.oneOf([`country`, `electronic`, `reggae`, `alternative`]).isRequired,
+    genre: PropTypes.oneOf([`alternative`, `electronic`, `country`, `reggae`]).isRequired,
   })).isRequired,
   onAnswer: PropTypes.func.isRequired,
 };

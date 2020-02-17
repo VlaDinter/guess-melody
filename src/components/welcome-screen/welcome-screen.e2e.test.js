@@ -11,9 +11,9 @@ Enzyme.configure({
 it(`WelcomeScreen is correctly rendered after click`, () => {
   const clickHandler = jest.fn();
   const welcomeScreen = shallow(<WelcomeScreen
-    time={0}
+    gameTime={0}
     errorCount={0}
-    onStartButtonClick={clickHandler}
+    onClick={clickHandler}
   />);
 
   const startButton = welcomeScreen.find(`button`);

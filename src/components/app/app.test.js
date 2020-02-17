@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import renderer from 'react-test-renderer';
 
-import App from './app.jsx';
+import {App} from './app.jsx';
 
 const mock = [
   {
@@ -14,29 +14,25 @@ const mock = [
       },
       {
         src: `test.mp3`,
-        genre: `reggae`,
-      },
-      {
-        src: `test.mp3`,
         genre: `electronic`,
       },
       {
         src: `test.mp3`,
         genre: `country`,
       },
+      {
+        src: `test.mp3`,
+        genre: `reggae`,
+      },
     ],
   },
   {
-    type: `John Snow`,
+    type: `artist`,
     song: {
-      artist: `Unicorn Heads`,
+      artist: `Jack Daniels`,
       src: `path.mp3`,
     },
     answers: [
-      {
-        picture: `path.jpg`,
-        artist: `Jack Daniels`,
-      },
       {
         picture: `path.jpg`,
         artist: `Jim Beam`,
@@ -45,15 +41,24 @@ const mock = [
         picture: `path.jpg`,
         artist: `John Snow`,
       },
+      {
+        picture: `path.jpg`,
+        artist: `Jack Daniels`,
+      },
     ],
   },
 ];
 
 it(`App correctly renders after relaunch`, () => {
   const tree = renderer.create(<App
-    gameTime={0}
-    errorCount={0}
     questions={mock}
+    step={0}
+    mistakes={0}
+    maxMistakes={0}
+    gameTime={0}
+    onUserAnswer={jest.fn()}
+    onWelcomeScreenClick={jest.fn()}
+    decrementSecond={jest.fn()}
   />, {
     createNodeMock: () => {
       return {};
