@@ -1,23 +1,34 @@
 import React from 'react';
 import ReactDom from 'react-dom';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
+import thunk from 'redux-thunk';
+import {compose} from 'recompose';
+import {BrowserRouter} from 'react-router-dom';
 
-import {reducer} from './reducer';
-import questions from './mocks/questions';
+import api from './api';
+import {reducer, Operation} from './reducer/reducer';
 import App from './components/app/app.jsx';
 
-const init = (gameQuestions) => {
-  const store = createStore(reducer);
+const init = () => {
+  const store = createStore(
+      reducer,
+      compose(
+          applyMiddleware(thunk.withExtraArgument(api)),
+          window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f
+      )
+  );
+
+  store.dispatch(Operation.loadQuestions());
 
   ReactDom.render(<Provider store={store}>
-    <App
-      questions={gameQuestions}
-    />
+    <BrowserRouter>
+      <App/>
+    </BrowserRouter>
   </Provider>,
   document.querySelector(`#root`)
   );
 };
 
-init(questions);
+init();
 

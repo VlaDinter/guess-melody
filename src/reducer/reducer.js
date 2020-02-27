@@ -4,28 +4,30 @@ const isGenreAnswerCorrect = (userAnswer, question) => userAnswer.every((it, i) 
   question.answers[i].genre === question.genre
 ));
 
+const Operation = {
+  loadQuestions: () => (dispatch, _, api) => {
+    return api.get(`/questions`)
+      .then((response) => dispatch(ActionCreator.loadQuestions(response.data)));
+  },
+};
+
 const initialState = {
   step: -1,
   mistakes: 0,
   errorCount: 3,
   gameTime: 300000,
+  questions: [],
 };
 
 const ActionCreator = {
-  incrementStep: (questions, step) => {
-    if (step < questions.length - 1) {
-      return {
-        type: `INCREMENT_STEP`,
-        payload: 1,
-      };
-    }
-
+  incrementStep: () => {
     return {
-      type: `RESET`,
+      type: `INCREMENT_STEP`,
+      payload: 1,
     };
   },
 
-  incrementMistake: (userAnswer, question, mistakes, maxMistakes) => {
+  incrementMistake: (userAnswer, question) => {
     let answerIsCorrect = false;
 
     switch (question.type) {
@@ -38,26 +40,27 @@ const ActionCreator = {
         break;
     }
 
-    if (!answerIsCorrect && mistakes + 1 >= maxMistakes) {
-      return {
-        type: `RESET`,
-      };
-    }
-
     return {
       type: `INCREMENT_MISTAKE`,
       payload: answerIsCorrect ? 0 : 1,
     };
   },
 
-  decrementSecond: (gameTime) => {
-    if (gameTime - 1000) {
-      return {
-        type: `DECREMENT_SECOND`,
-        payload: 1000,
-      };
-    }
+  decrementSecond: () => {
+    return {
+      type: `DECREMENT_SECOND`,
+      payload: 1000,
+    };
+  },
 
+  loadQuestions: (questions) => {
+    return {
+      type: `LOAD_QUESTIONS`,
+      payload: questions,
+    };
+  },
+
+  reset: () => {
     return {
       type: `RESET`,
     };
@@ -78,6 +81,10 @@ const reducer = (state = initialState, action) => {
       gameTime: state.gameTime - action.payload,
     });
 
+    case `LOAD_QUESTIONS`: return Object.assign({}, state, {
+      questions: action.payload,
+    });
+
     case `RESET`: return Object.assign({}, initialState);
   }
 
@@ -85,8 +92,9 @@ const reducer = (state = initialState, action) => {
 };
 
 export {
-  ActionCreator,
   isArtistAnswerCorrect,
   isGenreAnswerCorrect,
+  Operation,
+  ActionCreator,
   reducer,
 };
