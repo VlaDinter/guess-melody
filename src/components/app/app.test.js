@@ -51,14 +51,15 @@ const mock = [
 
 it(`App correctly renders after relaunch`, () => {
   const tree = renderer.create(<App
-    questions={mock}
     step={0}
     mistakes={0}
     maxMistakes={0}
     gameTime={0}
+    questions={mock}
     onUserAnswer={jest.fn()}
     onWelcomeScreenClick={jest.fn()}
     decrementSecond={jest.fn()}
+    onRestartGame={jest.fn()}
   />, {
     createNodeMock: () => {
       return {};

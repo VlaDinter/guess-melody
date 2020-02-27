@@ -1,30 +1,71 @@
-﻿import React, {Component} from 'react';
+﻿import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {Route, Switch, Redirect, Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import {ActionCreator} from '../../reducer';
+import {ActionCreator, Operation} from '../../reducer/reducer';
 import WelcomeScreen from '../welcome-screen/welcome-screen.jsx';
-import GenreQuestionScreen from '../genre-question-screen/genre-question-screen.jsx';
-import ArtistQuestionScreen from '../artist-question-screen/artist-question-screen.jsx';
 import TimerQuestionScreen from '../timer-question-screen/timer-question-screen.jsx';
 import ErrorQuestionScreen from '../error-question-screen/error-question-screen.jsx';
+import GenreQuestionScreen from '../genre-question-screen/genre-question-screen.jsx';
+import ArtistQuestionScreen from '../artist-question-screen/artist-question-screen.jsx';
+import RestartScreen from '../restart-screen/restart-screen.jsx';
+import LoseScreen from '../lose-screen/lose-screen.jsx';
+import WinScreen from '../win-screen/win-screen.jsx';
+import ErrorScreen from '../error-screen/error-screen.jsx';
 
-
-class App extends Component {
+class App extends PureComponent {
   render() {
     const {
-      questions,
       step,
+      mistakes,
+      maxMistakes,
+      gameTime,
+      questions,
+      onRestartGame,
     } = this.props;
 
-    return this._getScreen(questions[step]);
+    return <Switch>
+      <Route path='/' exact render={() => {
+        if (mistakes >= maxMistakes || !gameTime) {
+          return <Redirect to='/lose'/>;
+        }
+
+        if (step >= questions.length && questions.length) {
+          return <Redirect to='/win'/>;
+        }
+
+        return this._getScreen(questions[step]);
+      }}/>
+
+      <Route path='/restart' exact render={() => <RestartScreen
+        onRestartGame={onRestartGame}
+      />}/>
+
+      <Route path='/lose' exact render={() => <LoseScreen
+        timeOver={gameTime ? false : true}
+        onRestartGame={onRestartGame}
+      />}/>
+
+      <Route path='/win' exact render={() => <WinScreen
+        gameTime={gameTime}
+        mistakes={mistakes}
+        questionsLength={questions.length}
+        onRestartGame={onRestartGame}
+      />}/>
+
+      <Route render={() => <ErrorScreen/>}/>
+    </Switch>;
   }
 
   _getScreen(question) {
-    if (!question) {
+    const {
+      step,
+      questions,
+    } = this.props;
+
+    if (step === -1) {
       const {
-        questions,
-        step,
         maxMistakes,
         gameTime,
         onWelcomeScreenClick,
@@ -33,13 +74,15 @@ class App extends Component {
       return <WelcomeScreen
         gameTime={gameTime}
         errorCount={maxMistakes}
-        onClick={() => onWelcomeScreenClick(questions, step)}
+        onClick={onWelcomeScreenClick}
       />;
     }
 
+    if (!questions.length) {
+      return <Redirect to='/404'/>;
+    }
+
     const {
-      questions,
-      step,
       mistakes,
       maxMistakes,
       gameTime,
@@ -48,11 +91,11 @@ class App extends Component {
 
     return <section className={`game game--${questions[step].type}`}>
       <header className="game__header">
-        <a className="game__back" href="#">
+        <Link className="game__back" to='/restart'>
           <span className="visually-hidden">Сыграть ещё раз</span>
 
           <img className="game__logo" src="img/melody-logo-ginger.png" alt="Угадай мелодию"/>
-        </a>
+        </Link>
 
         <svg xmlns="http://www.w3.org/2000/svg" className="timer" viewBox="0 0 780 780">
           <circle className="timer__line" cx="390" cy="390" r="370" style={{filter: `url(#blur)`, transform: `rotate(-90deg) scaleY(-1)`, transformOrigin: `center`}}/>
@@ -75,7 +118,6 @@ class App extends Component {
 
   _getQuestionScreen(question) {
     const {
-      questions,
       step,
       mistakes,
       maxMistakes,
@@ -93,7 +135,7 @@ class App extends Component {
         maxMistakes={maxMistakes}
         gameTime={gameTime}
         decrementSecond={decrementSecond}
-        onAnswer={(userAnswer) => onUserAnswer(userAnswer, question, mistakes, maxMistakes, questions, step)}
+        onAnswer={(userAnswer) => onUserAnswer(userAnswer, question)}
       />;
 
       case `artist`: return <ArtistQuestionScreen
@@ -104,7 +146,7 @@ class App extends Component {
         maxMistakes={maxMistakes}
         gameTime={gameTime}
         decrementSecond={decrementSecond}
-        onAnswer={(userAnswer) => onUserAnswer(userAnswer, question, mistakes, maxMistakes, questions, step)}
+        onAnswer={(userAnswer) => onUserAnswer(userAnswer, question)}
       />;
     }
 
@@ -113,14 +155,15 @@ class App extends Component {
 }
 
 App.propTypes = {
-  questions: PropTypes.array.isRequired,
   step: PropTypes.number.isRequired,
   mistakes: PropTypes.number.isRequired,
   maxMistakes: PropTypes.number.isRequired,
   gameTime: PropTypes.number.isRequired,
-  onUserAnswer: PropTypes.func.isRequired,
+  questions: PropTypes.array.isRequired,
   onWelcomeScreenClick: PropTypes.func.isRequired,
+  onUserAnswer: PropTypes.func.isRequired,
   decrementSecond: PropTypes.func.isRequired,
+  onRestartGame: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => Object.assign({}, ownProps, {
@@ -128,17 +171,23 @@ const mapStateToProps = (state, ownProps) => Object.assign({}, ownProps, {
   mistakes: state.mistakes,
   maxMistakes: state.errorCount,
   gameTime: state.gameTime,
+  questions: state.questions,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onWelcomeScreenClick: (questions, step) => dispatch(ActionCreator.incrementStep(questions, step)),
+  onWelcomeScreenClick: () => dispatch(ActionCreator.incrementStep()),
 
-  onUserAnswer: (userAnswer, question, mistakes, maxMistakes, questions, step) => {
-    dispatch(ActionCreator.incrementStep(questions, step));
-    dispatch(ActionCreator.incrementMistake(userAnswer, question, mistakes, maxMistakes));
+  onUserAnswer: (userAnswer, question) => {
+    dispatch(ActionCreator.incrementStep());
+    dispatch(ActionCreator.incrementMistake(userAnswer, question));
   },
 
-  decrementSecond: (gameTime) => dispatch(ActionCreator.decrementSecond(gameTime)),
+  decrementSecond: () => dispatch(ActionCreator.decrementSecond()),
+
+  onRestartGame: () => {
+    dispatch(ActionCreator.reset());
+    dispatch(Operation.loadQuestions());
+  },
 });
 
 export {App};

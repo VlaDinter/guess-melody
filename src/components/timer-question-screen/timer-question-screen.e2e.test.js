@@ -1,12 +1,14 @@
 ﻿import React from 'react';
-import Enzyme, {shallow} from 'enzyme';
+import {configure, shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 
 import TimerQuestionScreen from './timer-question-screen.jsx';
 
-Enzyme.configure({
+configure({
   adapter: new Adapter(),
 });
+
+jest.useFakeTimers();
 
 it(`Timer in TimerQuestionScreen is correctly works`, () => {
   const decrementSecond = jest.fn();
@@ -15,9 +17,12 @@ it(`Timer in TimerQuestionScreen is correctly works`, () => {
     decrementSecond={decrementSecond}
   />);
 
-  const instance = timerQuestionScreen.instance();
-  jest.spyOn(instance, `_tick`);
-  instance.render();
+  timerQuestionScreen.instance();
 
-  expect(instance._tick).toHaveBeenCalledTimes(1);
+  expect(decrementSecond).not.toBeCalled();
+
+  jest.advanceTimersByTime(1000);
+
+  expect(decrementSecond).toBeCalled();
+  expect(decrementSecond).toHaveBeenCalledTimes(1);
 });

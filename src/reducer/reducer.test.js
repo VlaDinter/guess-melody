@@ -1,7 +1,11 @@
-﻿import {
-  ActionCreator,
+﻿import MockAdapter from 'axios-mock-adapter';
+
+import api from '../api';
+import {
   isArtistAnswerCorrect,
   isGenreAnswerCorrect,
+  Operation,
+  ActionCreator,
   reducer,
 } from './reducer';
 
@@ -109,103 +113,9 @@ describe(`Business logic is correct`, () => {
 
 describe(`Action creators work correctly`, () => {
   it(`Action creator for incrementing step returns action with 1 pay`, () => {
-    expect(ActionCreator.incrementStep([
-      {
-        type: `artist`,
-        song: {
-          artist: ``,
-          src: ``,
-        },
-        answers: [
-          {
-            artist: ``,
-            picture: ``,
-          },
-          {
-            artist: ``,
-            picture: ``,
-          },
-          {
-            artist: ``,
-            picture: ``,
-          },
-        ]
-      },
-      {
-        type: `genre`,
-        genre: ``,
-        answers: [
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-        ]
-      }
-    ], 0)).toEqual({
+    expect(ActionCreator.incrementStep()).toEqual({
       type: `INCREMENT_STEP`,
       payload: 1,
-    });
-  });
-
-  it(`Action creator for incrementing step returns reset`, () => {
-    expect(ActionCreator.incrementStep([
-      {
-        type: `artist`,
-        song: {
-          artist: ``,
-          src: ``,
-        },
-        answers: [
-          {
-            artist: ``,
-            picture: ``,
-          },
-          {
-            artist: ``,
-            picture: ``,
-          },
-          {
-            artist: ``,
-            picture: ``,
-          },
-        ]
-      },
-      {
-        type: `genre`,
-        genre: ``,
-        answers: [
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-          {
-            genre: ``,
-            src: ``,
-          },
-        ]
-      }
-    ], 2)).toEqual({
-      type: `RESET`,
     });
   });
 
@@ -325,69 +235,22 @@ describe(`Action creators work correctly`, () => {
     });
   });
 
-  it(`Action creator for incrementing mistake returns reset`, () => {
-    expect(ActionCreator.incrementMistake({
-      artist: `incorrect`,
-      picture: ``,
-    }, {
-      type: `artist`,
-      song: {
-        artist: `correct`,
-        src: ``,
-      },
-      answers: [
-        {
-          artist: `correct`,
-          picture: ``,
-        },
-        {
-          artist: `incorrect`,
-          picture: ``,
-        },
-        {
-          artist: `incorrect-2`,
-          picture: ``,
-        },
-      ]
-    }, Infinity, 0)).toEqual({
-      type: `RESET`,
-    });
-
-    expect(ActionCreator.incrementMistake([true, true, true, true], {
-      type: `genre`,
-      genre: `jazz`,
-      answers: [
-        {
-          genre: `blues`,
-          src: ``,
-        },
-        {
-          genre: `blues`,
-          src: ``,
-        },
-        {
-          genre: `blues`,
-          src: ``,
-        },
-        {
-          genre: `blues`,
-          src: ``,
-        },
-      ]
-    }, Infinity, 0)).toEqual({
-      type: `RESET`,
-    });
-  });
-
   it(`Action Creator for decrement second returns action with 1000 pay`, () => {
-    expect(ActionCreator.decrementSecond(2000)).toEqual({
+    expect(ActionCreator.decrementSecond()).toEqual({
       type: `DECREMENT_SECOND`,
       payload: 1000,
     });
   });
 
-  it(`Action Creator for decrement second returns reset`, () => {
-    expect(ActionCreator.decrementSecond(1000)).toEqual({
+  it(`Action Creator for load questions returns action with questions pay`, () => {
+    expect(ActionCreator.loadQuestions([{}, {}, {}])).toEqual({
+      type: `LOAD_QUESTIONS`,
+      payload: [{}, {}, {}],
+    });
+  });
+
+  it(`Action Creator for reset returns action with reset type`, () => {
+    expect(ActionCreator.reset()).toEqual({
       type: `RESET`,
     });
   });
@@ -400,6 +263,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     });
   });
 
@@ -409,6 +273,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     }, {
       type: `INCREMENT_STEP`,
       payload: 1,
@@ -417,21 +282,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
-    });
-
-    expect(reducer({
-      step: -1,
-      mistakes: 0,
-      errorCount: 3,
-      gameTime: 300000,
-    }, {
-      type: `INCREMENT_STEP`,
-      payload: 0,
-    })).toEqual({
-      step: -1,
-      mistakes: 0,
-      errorCount: 3,
-      gameTime: 300000,
+      questions: [],
     });
   });
 
@@ -441,6 +292,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     }, {
       type: `INCREMENT_MISTAKE`,
       payload: 1,
@@ -449,6 +301,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 1,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     });
 
     expect(reducer({
@@ -456,6 +309,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     }, {
       type: `INCREMENT_MISTAKES`,
       payload: 0,
@@ -464,6 +318,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     });
   });
 
@@ -473,6 +328,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     }, {
       type: `DECREMENT_SECOND`,
       payload: 1000,
@@ -481,21 +337,26 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 299000,
+      questions: [],
     });
+  });
 
+  it(`Reducer should correctly load questions`, () => {
     expect(reducer({
       step: -1,
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     }, {
-      type: `DECREMENT_SECOND`,
-      payload: 0,
+      type: `LOAD_QUESTIONS`,
+      payload: [{}, {}, {}],
     })).toEqual({
       step: -1,
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [{}, {}, {}],
     });
   });
 
@@ -505,6 +366,7 @@ describe(`Reducer works correctly`, () => {
       mistakes: 12309,
       errorCount: 3,
       gameTime: 1000,
+      questions: [{}, {}, {}],
     }, {
       type: `RESET`,
     })).toEqual({
@@ -512,6 +374,27 @@ describe(`Reducer works correctly`, () => {
       mistakes: 0,
       errorCount: 3,
       gameTime: 300000,
+      questions: [],
     });
+  });
+
+  it(`Should make a correct API call to /questions`, function () {
+    const apiMock = new MockAdapter(api);
+    const dispatch = jest.fn();
+    const _ = null;
+    const questionLoader = Operation.loadQuestions();
+
+    apiMock
+      .onGet(`/questions`)
+      .reply(200, [{fake: true}]);
+
+    return questionLoader(dispatch, _, api)
+      .then(() => {
+        expect(dispatch).toHaveBeenCalledTimes(1);
+        expect(dispatch).toHaveBeenNthCalledWith(1, {
+          type: `LOAD_QUESTIONS`,
+          payload: [{fake: true}],
+        });
+      });
   });
 });

@@ -42,14 +42,9 @@ class TimerQuestionScreen extends PureComponent {
   }
 
   _tick() {
-    const {
-      decrementSecond,
-      gameTime,
-    } = this.props;
+    const {decrementSecond} = this.props;
 
-    return setTimeout(() => {
-      decrementSecond(gameTime);
-    }, 1000);
+    return setTimeout(decrementSecond, 1000);
   }
 }
 
